@@ -9,7 +9,7 @@ namespace Albergo.Models
 {
     public class DB
     {
-        public static string connectionString = ConfigurationManager.ConnectionStrings["AlbergoDBConnection"].ToString();
+        public static string connectionString = ConfigurationManager.ConnectionStrings["AlbergooDBConnection"].ToString();
         public static SqlConnection conn = new SqlConnection(connectionString);
     }
 }

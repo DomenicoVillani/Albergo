@@ -1,0 +1,14 @@
+﻿body {
+    background-color: #ACE6C8;
+    color: #201145;
+    padding-top: 100px;
+}
+.nav-bg-color {
+    background-color: #67A5A4;
+}
+
+.font-pers {
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}

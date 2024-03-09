@@ -1,22 +1,23 @@
-﻿@model List<Albergo.Models.Prenotazione>
+﻿<link href="~/Style/indexHome.css" rel="stylesheet" />
+@model List<Albergo.Models.Prenotazione>
 
 @{
     ViewBag.Title = "Prenotazioni";
 }
 
-<h2>Prenotazioni</h2>
+<h2 class="size-font-h2 text-center font-pers my-5">Prenotazioni</h2>
 
-<table class="table table-bordered table-striped">
+<table class="table table-bordered table-striped font-pers">
     <thead>
         <tr>
-            <th>Prenotazione ID</th>
-            <th>Data Prenotazione</th>
-            <th>Data Arrivo</th>
-            <th>Data Partenza</th>
-            <th>Nome</th>
-            <th>Cognome</th>
-            <th>Numero Camera</th>
-            <th>Tipo Pensione</th>
+            <th class="size-font-tab">Prenotazione ID</th>
+            <th class="size-font-tab">Data Prenotazione</th>
+            <th class="size-font-tab">Data Arrivo</th>
+            <th class="size-font-tab">Data Partenza</th>
+            <th class="size-font-tab">Nome</th>
+            <th class="size-font-tab">Cognome</th>
+            <th class="size-font-tab">Numero Camera</th>
+            <th class="size-font-tab">Tipo Pensione</th>
             <th></th>
         </tr>
     </thead>
@@ -24,17 +25,17 @@
         @foreach (var prenotazione in Model)
         {
             <tr>
-                <td>@prenotazione.Prenotazione_ID</td>
-                <td>@prenotazione.Data_Pren.ToString("yyyy-MM-dd")</td>
-                <td>@prenotazione.Data_Arrivo.ToString("yyyy-MM-dd")</td>
-                <td>@prenotazione.Data_Partenza.ToString("yyyy-MM-dd")</td>
-                <td>@prenotazione.Ospite.Nome</td>
-                <td>@prenotazione.Ospite.Cognome</td>
-                <td>@prenotazione.Camera.Numero</td>
-                <td>@prenotazione.Pensione.Tipo</td>
-                <td class="d-flex">
-                    @Html.ActionLink("Dettaglio", "Details", "Prenotazioni", new { id = prenotazione.Prenotazione_ID }, new { @class = "btn btn-secondary me-2" })
-                    @Html.ActionLink("Aggiungi servizi", "AddServizi", "Prenotazioni", new { id = prenotazione.Prenotazione_ID }, new { @class = "btn btn-secondary" })
+                <td class="text-center size-font-res">@prenotazione.Prenotazione_ID</td>
+                <td class="text-center size-font-res">@prenotazione.Data_Pren.ToString("yyyy-MM-dd")</td>
+                <td class="text-center size-font-res">@prenotazione.Data_Arrivo.ToString("yyyy-MM-dd")</td>
+                <td class="text-center size-font-res">@prenotazione.Data_Partenza.ToString("yyyy-MM-dd")</td>
+                <td class="text-center size-font-res">@prenotazione.Ospite.Nome</td>
+                <td class="text-center size-font-res">@prenotazione.Ospite.Cognome</td>
+                <td class="text-center size-font-res">@prenotazione.Camera.Numero</td>
+                <td class="text-center size-font-res">@prenotazione.Pensione.Tipo</td>
+                <td class="d-flex justify-content-center">
+                    @Html.ActionLink("Dettaglio/Checkout", "Details", "Prenotazioni", new { id = prenotazione.Prenotazione_ID }, new { @class = "btn btn-secondary me-2 font-pers bg-color-button font-pers" })
+                    @Html.ActionLink("Aggiungi servizi", "AddServizi", "Prenotazioni", new { id = prenotazione.Prenotazione_ID }, new { @class = "btn btn-secondary font-pers bg-color-button font-pers" })
                 </td>
             </tr>
         }

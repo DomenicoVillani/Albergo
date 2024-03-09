@@ -175,6 +175,12 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Style\AddPren.css" />
+    <Content Include="Style\AddServizi.css" />
+    <Content Include="Style\Dettagli.css" />
+    <Content Include="Style\indexHome.css" />
+    <Content Include="Style\IndexLogin.css" />
+    <Content Include="Style\Layout.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -192,6 +198,8 @@
     <Content Include="Views\Login\Index.cshtml" />
     <Content Include="Views\Prenotazioni\Index.cshtml" />
     <Content Include="Views\Prenotazioni\Details.cshtml" />
+    <Content Include="Views\Prenotazioni\AddServizi.cshtml" />
+    <Content Include="Views\Prenotazioni\AddPren.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,104 @@
+﻿﻿<link href="~/Style/AddServizi.css" rel="stylesheet" />
+@model Albergo.Models.Prenotazione
+@{
+    ViewBag.Title = "Aggiungi Servizio";
+}
+
+<h2 class="font-pers size-font-h2 text-center">Dettagli Ospite</h2>
+
+<div class="card font-pers size-font-label color-trasparent-bg border border-0 text-center">
+    <div class="card-body">
+        <h5 class="card-title size-font-label">Prenotazione ID: @Model.Prenotazione_ID</h5>
+
+        @if (Model.Ospite != null)
+        {
+            <div class="d-flex justify-content-center">
+                <p class="card-text me-1 text-center">Ospite: @Model.Ospite.Nome</p>
+                <p class="card-text text-center"> @Model.Ospite.Cognome</p>
+            </div>
+        }
+        else
+        {
+            <p class="card-text">Ospite non disponibile</p>
+        }
+
+        @if (Model.Camera != null)
+        {
+            <p class="card-text text-center">Camera Numero: @Model.Camera.Numero</p>
+        }
+        else
+        {
+            <p class="card-text text-center">Camera non disponibile</p>
+        }
+
+        <p class="card-text">Data Arrivo: @Model.Data_Arrivo.ToShortDateString()</p>
+        <p class="card-text">Data Partenza: @Model.Data_Partenza.ToShortDateString()</p>
+
+        @if (Model.Checkout != null)
+        {
+            <p class="card-text text-center">Notti: @Model.Checkout.Notti</p>
+            <p class="card-text text-center">Totale Servizi: @Model.Checkout.TotServizi.ToString("C")</p>
+            <p class="card-text text-center">Totale Prenotazione: @Model.Checkout.TotPren.ToString("C")</p>
+        }
+        else
+        {
+            <p class="card-text">Dettagli Checkout non disponibili</p>
+        }
+    </div>
+</div>
+
+
+<h3 class="size-font-h2 text-center">Aggiungi un servizio!</h3>
+<form method="post" action="@Url.Action("AddServizi", "Prenotazioni")" class="needs-validation" novalidate>
+    <input type="hidden" id="Prenotazione_ID" name="Prenotazione_ID" value="@Model.Prenotazione_ID">
+    <input type="hidden" id="selectedServizio_ID" name="selectedServizio_ID" value="">
+
+    <div class="d-flex justify-content-center">
+        <div class="d-flex flex-column my-3">
+            <div class="form-group mx-3">
+                <label for="Servizio_ID">Servizio:</label>
+                <select id="Servizio_ID" name="Servizio_ID" class="form-control">
+                    @foreach (var servizio in ViewBag.ServiziPrenotati)
+                    {
+                        <option value="@servizio.Servizio_ID">@servizio.Tipo</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group mx-3">
+                <label for="Data_Serv">Data Servizio:</label>
+                <input type="date" id="Data_Serv" name="Data_Serv" class="form-control" min="@Model.Data_Arrivo.ToString("yyyy-MM-dd")" max="@Model.Data_Partenza.ToString("yyyy-MM-dd")" onchange="filterDates()">
+            </div>
+        </div>
+        <div class="d-flex flex-column my-3">
+            <div class="form-group mx-3">
+                <label for="Quantita">Quantita:</label>
+                <input type="number" id="Quantita" name="Quantita" class="form-control" min="1">
+            </div>
+
+            <div class="form-group mx-3">
+                <label for="PrezzoServ">Prezzo Servizio:</label>
+                <input type="text" id="PrezzoServ" name="PrezzoServ" class="form-control">
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+        <button type="submit" class="btn btn-success box-size-and-font">Aggiungi Servizio</button>
+    </div>
+    
+</form>
+
+
+
+<script>
+    function filterDates() {
+        var dataArrivo = new Date('@Model.Data_Arrivo.ToString("yyyy-MM-dd")');
+        var dataPartenza = new Date('@Model.Data_Partenza.ToString("yyyy-MM-dd")');
+        var dataServInput = document.getElementById("Data_Serv");
+        var dataServ = new Date(dataServInput.value);
+
+        if (dataServ < dataArrivo || dataServ > dataPartenza) {
+            dataServInput.value = '';
+        }
+    }
+</script>

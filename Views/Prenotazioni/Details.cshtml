@@ -1,57 +1,48 @@
-﻿@model Albergo.Models.Prenotazione
+﻿<link href="~/Style/Dettagli.css" rel="stylesheet" />
+@model Albergo.Models.Prenotazione
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Dettagli";
 }
 
-<h2>Details</h2>
-
-<h2>Checkout Details</h2>
-
-<div>
-    <p>Prenotazione ID:</p>
-    <p>@Model.Prenotazione_ID</p>
+<h2 class="font-pers size-font-h2 text-center">Dettagli</h2>
+<h2 class="font-pers size-font-h2 text-center">Checkout</h2>
 
 
-    @if (Model.Camera != null)
-    {
-        <p>Camera Numero:</p>
-        <p>@Model.Camera.Numero</p>
-    }
-    else
-    {
-        <p>Camera details not available</p>
-    }
+<div class="card font-pers size-font-label color-trasparent-bg border border-0 text-center">
+    <div class="card-body">
+        <h5 class="card-title size-font-label text-center">Prenotazione ID: @Model.Prenotazione_ID</h5>
 
-    @if (Model.Ospite != null)
-    {
-        <p>@Model.Ospite.Nome</p>
-        <p>@Model.Ospite.Cognome</p>
-    }
-    else
-    {
-        <p>Ospiti details not available</p>
-    }
+        @if (Model.Camera != null)
+        {
+            <p class="card-text size-font-label text-center">Camera Numero: @Model.Camera.Numero</p>
+        }
+        else
+        {
+            <p class="card-text size-font-label text-center">Camera details not available</p>
+        }
 
-    <p>Data Arrivo:</p>
-    <p>@Model.Data_Arrivo.ToShortDateString()</p>
+        @if (Model.Ospite != null)
+        {
+            <p class="card-text size-font-label text-center">Nome: @Model.Ospite.Nome</p>
+            <p class="card-text size-font-label text-center">Cognome: @Model.Ospite.Cognome</p>
+        }
+        else
+        {
+            <p class="card-text size-font-label text-center">Ospiti details not available</p>
+        }
 
-    <p>Data Partenza:</p>
-    <p>@Model.Data_Partenza.ToShortDateString()</p>
+        <p class="card-text size-font-label text-center">Data Arrivo: @Model.Data_Arrivo.ToShortDateString()</p>
+        <p class="card-text size-font-label text-center">Data Partenza: @Model.Data_Partenza.ToShortDateString()</p>
 
-    @if (Model.Checkout != null)
-    {
-        <p>Notti:</p>
-        <p>@Model.Checkout.Notti</p>
-
-        <p>Totale Servizi:</p>
-        <p>@Model.Checkout.TotServizi.ToString("C")</p>
-
-        <p>Totale Prenotazione:</p>
-        <p>@Model.Checkout.TotPren.ToString("C")</p>
-    }
-    else
-    {
-        <p>Checkout details not available</p>
-    }
-
+        @if (Model.Checkout != null)
+        {
+            <p class="card-text size-font-label text-center">Notti: @Model.Checkout.Notti</p>
+            <p class="card-text size-font-label text-center">Totale Servizi: @Model.Checkout.TotServizi.ToString("C")</p>
+            <p class="card-text size-font-label text-center">Totale Prenotazione: @Model.Checkout.TotPren.ToString("C")</p>
+        }
+        else
+        {
+            <p class="card-text size-font-label text-center">Checkout details not available</p>
+        }
+    </div>
 </div>
