@@ -10,7 +10,6 @@ namespace Albergo.Controllers
 {
     public class PrenotazioniController : Controller
     {
-        // GET: Prenotazioni
         [Authorize]
         public ActionResult Index()
         {
@@ -89,7 +88,6 @@ namespace Albergo.Controllers
                 if (reader.HasRows)
                 {
                     reader.Read();
-                    // Calcola il numero di notti
                     DateTime dataPartenza = (DateTime)reader["Data_Partenza"];
                     DateTime dataArrivo = (DateTime)reader["Data_Arrivo"];
                     TimeSpan difference = dataPartenza - dataArrivo;
@@ -193,7 +191,6 @@ namespace Albergo.Controllers
                 if (reader.HasRows)
                 {
                     reader.Read();
-                    // Calcola il numero di notti
                     DateTime dataPartenza = (DateTime)reader["Data_Partenza"];
                     DateTime dataArrivo = (DateTime)reader["Data_Arrivo"];
                     TimeSpan difference = dataPartenza - dataArrivo;
@@ -343,7 +340,6 @@ namespace Albergo.Controllers
             {
                 DB.conn.Open();
 
-                // Popola la lista dei servizi e imposta ViewBag.Servizi
                 List<Servizio> listaServizi = new List<Servizio>();
                 var cmdServizi = new SqlCommand("SELECT * FROM Servizi", DB.conn);
                 var readerServizi = cmdServizi.ExecuteReader();
@@ -357,7 +353,6 @@ namespace Albergo.Controllers
                 ViewBag.Servizi = listaServizi;
                 readerServizi.Close();
 
-                // Popola la lista delle pensioni e imposta ViewBag.Pensioni
                 List<Pensione> listaPensioni = new List<Pensione>();
                 var cmdPensioni = new SqlCommand("SELECT * FROM Pensioni", DB.conn);
                 var readerPensioni = cmdPensioni.ExecuteReader();
@@ -372,7 +367,6 @@ namespace Albergo.Controllers
                 ViewBag.Pensioni = listaPensioni;
                 readerPensioni.Close();
 
-                // Popola la lista delle camere e imposta ViewBag.Camere
                 List<Camera> listaCamere = new List<Camera>();
                 var cmdCamere = new SqlCommand("SELECT * FROM Camere", DB.conn);
                 var readerCamere = cmdCamere.ExecuteReader();
@@ -409,7 +403,6 @@ namespace Albergo.Controllers
             }
             catch (Exception ex)
             {
-                // Gestisci l'eccezione appropriatamente, come registrare o visualizzare un messaggio di errore
                 Console.WriteLine(ex.Message);
             }
             finally
@@ -426,38 +419,34 @@ namespace Albergo.Controllers
             {
                 DB.conn.Open();
                 var cmdPren = new SqlCommand(@"INSERT INTO Prenotazioni 
-                                            (Prenotazione_ID, Data_Pren, Data_Arrivo, Data_Partenza, Pensione_ID, Ospite_ID, Camera_ID)
-                                            VALUES
-                                            (@prenotazione_id, @data_pren, @data_arrivo, @data_partenza, @pensione_id, @ospite_id, @camera_id)
-                                            OUTPUT INSERTED.Prenotazione_ID", DB.conn);
-                cmdPren.Parameters.AddWithValue("prenotazione_id", pren.Prenotazione_ID);
-                cmdPren.Parameters.AddWithValue("data_pren", pren.Data_Pren);
-                cmdPren.Parameters.AddWithValue("data_arrivo", pren.Data_Arrivo);
-                cmdPren.Parameters.AddWithValue("data_partenza", pren.Data_Partenza);
-                cmdPren.Parameters.AddWithValue("pensione_id", pren.Pensione_ID);
-                cmdPren.Parameters.AddWithValue("ospite_id", pren.Ospite_ID);
-                cmdPren.Parameters.AddWithValue("camera_id", pren.Camera_ID);
-                var lastPren =cmdPren.ExecuteScalar();
-
-                if(lastPren != null)
+                            (Data_Pren, Data_Arrivo, Data_Partenza, Pensione_ID, Ospite_ID, Camera_ID)
+                            VALUES(@data_pren, @data_arrivo, @data_partenza, @pensione_id, @ospite_id, @camera_id)
+                            SELECT SCOPE_IDENTITY()", DB.conn);
+                cmdPren.Parameters.AddWithValue("@data_pren", pren.Data_Pren);
+                cmdPren.Parameters.AddWithValue("@data_arrivo", pren.Data_Arrivo);
+                cmdPren.Parameters.AddWithValue("@data_partenza", pren.Data_Partenza);
+                cmdPren.Parameters.AddWithValue("@pensione_id", pren.Pensione_ID);
+                cmdPren.Parameters.AddWithValue("@ospite_id", pren.Ospite_ID);
+                cmdPren.Parameters.AddWithValue("@camera_id", pren.Camera_ID);
+                int lastInsertedId = Convert.ToInt32(cmdPren.ExecuteScalar());
+                if (lastInsertedId != 0)
                 {
-                    return RedirectToAction("Details", new {id=lastPren});
+                    return RedirectToAction("Details", new { id = lastInsertedId });
                 }
                 else
                 {
                     return View();
                 }
-
             }
             catch (Exception ex)
-            { 
-
+            {
+                Console.WriteLine(ex.Message);
+                return View();
             }
             finally
             {
                 DB.conn.Close();
             }
-            return View();
         }
 
         public JsonResult GetCliente(string codFisc)
@@ -505,7 +494,6 @@ namespace Albergo.Controllers
 
             return Json(prenotazioni, JsonRequestBehavior.AllowGet);
         }
-        //////////////////////////////////////
         public JsonResult GetPensioneCompleta()
         {
             try
@@ -522,20 +510,17 @@ namespace Albergo.Controllers
                     count = (int)reader[0];
                 }
 
-                // Creare un oggetto anonimo per contenere il conteggio
                 var result = new
                 {
                     NumeroPrenotazioni = count
                 };
 
-                // Aggiungi un log per vedere il valore del conteggio
                 Console.WriteLine("Numero di prenotazioni trovate: " + count);
 
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                // Se si verifica un'eccezione, restituisci un messaggio di errore
                 return Json(new { error = "Si è verificato un errore: " + ex.Message });
             }
             finally
