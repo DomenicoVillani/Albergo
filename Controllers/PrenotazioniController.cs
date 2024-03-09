@@ -181,13 +181,13 @@ namespace Albergo.Controllers
             {
                 DB.conn.Open();
                 var command = new SqlCommand(@"SELECT *, o.Nome AS NomeOspite, o.Cognome AS CognomeOspite
-                FROM Prenotazioni AS p
-                JOIN Pensioni AS pe ON pe.Pensione_ID = p.Pensione_ID
-                JOIN Camere AS c ON c.Camera_ID = p.Camera_ID
-                JOIN Camere AS cam ON cam.Camera_ID = p.Camera_ID
-                JOIN Categorie AS cat ON cat.Categoria_ID = cam.Categoria_ID
-                JOIN Ospiti AS o ON o.Ospite_ID = p.Ospite_ID
-                WHERE Prenotazione_ID=@id", DB.conn);
+                                             FROM Prenotazioni AS p
+                                             JOIN Pensioni AS pe ON pe.Pensione_ID = p.Pensione_ID
+                                             JOIN Camere AS c ON c.Camera_ID = p.Camera_ID
+                                             JOIN Camere AS cam ON cam.Camera_ID = p.Camera_ID
+                                             JOIN Categorie AS cat ON cat.Categoria_ID = cam.Categoria_ID
+                                             JOIN Ospiti AS o ON o.Ospite_ID = p.Ospite_ID
+                                             WHERE Prenotazione_ID=@id", DB.conn);
                 command.Parameters.AddWithValue("id", id);
                 var reader = command.ExecuteReader();
                 if (reader.HasRows)
@@ -228,9 +228,9 @@ namespace Albergo.Controllers
                 reader.Close();
 
                 var comServizi = new SqlCommand(@"SELECT *
-                                         FROM PS as p
-                                         JOIN Servizi as s ON s.Servizio_ID = p.Servizio_ID
-                                         WHERE p.Prenotazione_ID=@id", DB.conn);
+                                  FROM PS as p
+                                  JOIN Servizi as s ON s.Servizio_ID = p.Servizio_ID
+                                  WHERE p.Prenotazione_ID=@id", DB.conn);
                 comServizi.Parameters.AddWithValue("@id", id);
                 var readerServizi = comServizi.ExecuteReader();
                 if (readerServizi.HasRows)
@@ -259,6 +259,22 @@ namespace Albergo.Controllers
                     TotServizi = TotServizi,
                     TotPren = totalePrenotazione
                 };
+
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                DB.conn.Close();
+            }
+
+            try
+            {
+                DB.conn.Open();
                 List<Servizio> lista = new List<Servizio>();
                 var cmd = new SqlCommand("SELECT * FROM Servizi", DB.conn);
                 var listaservizi = cmd.ExecuteReader();
@@ -272,19 +288,19 @@ namespace Albergo.Controllers
                         servizio.Tipo = (string)listaservizi["Tipo"];
                         lista.Add(servizio);
                     }
-                    ViewBag.ServiziPrenotati = lista;
+                    TempData["Servizi"] = lista;
                     listaservizi.Close();
                 }
-
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            catch { }
             finally
             {
                 DB.conn.Close();
             }
+
+
+
+
 
             return View(pren);
         }
@@ -371,6 +387,25 @@ namespace Albergo.Controllers
                 }
                 ViewBag.Camere = listaCamere;
                 readerCamere.Close();
+
+                List<Ospite> listaOspiti = new List<Ospite>();
+                var cmdOspite = new SqlCommand("SELECT * FROM Ospiti", DB.conn);
+                var readerOspiti = cmdOspite.ExecuteReader();
+                while (readerOspiti.Read())
+                {
+                    var ospite = new Ospite();
+                    ospite.Ospite_ID = (int)readerOspiti["Ospite_ID"];
+                    ospite.Nome = (string)readerOspiti["Nome"];
+                    ospite.Cognome = (string)readerOspiti["Cognome"];
+                    ospite.Citta = (string)readerOspiti["Citta"];
+                    ospite.Provincia = (string)readerOspiti["Provincia"];
+                    ospite.Email = (string)readerOspiti["Email"];
+                    ospite.Telefono = (string)readerOspiti["Telefono"];
+                    ospite.Cod_Fisc = (string)readerOspiti["Cod_Fisc"];
+                    listaOspiti.Add(ospite);
+                }
+                ViewBag.Ospiti = listaOspiti;
+                readerOspiti.Close();
             }
             catch (Exception ex)
             {
@@ -382,6 +417,46 @@ namespace Albergo.Controllers
                 DB.conn.Close();
             }
 
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AddPren(Prenotazione pren)
+        {
+            try
+            {
+                DB.conn.Open();
+                var cmdPren = new SqlCommand(@"INSERT INTO Prenotazioni 
+                                            (Prenotazione_ID, Data_Pren, Data_Arrivo, Data_Partenza, Pensione_ID, Ospite_ID, Camera_ID)
+                                            VALUES
+                                            (@prenotazione_id, @data_pren, @data_arrivo, @data_partenza, @pensione_id, @ospite_id, @camera_id)
+                                            OUTPUT INSERTED.Prenotazione_ID", DB.conn);
+                cmdPren.Parameters.AddWithValue("prenotazione_id", pren.Prenotazione_ID);
+                cmdPren.Parameters.AddWithValue("data_pren", pren.Data_Pren);
+                cmdPren.Parameters.AddWithValue("data_arrivo", pren.Data_Arrivo);
+                cmdPren.Parameters.AddWithValue("data_partenza", pren.Data_Partenza);
+                cmdPren.Parameters.AddWithValue("pensione_id", pren.Pensione_ID);
+                cmdPren.Parameters.AddWithValue("ospite_id", pren.Ospite_ID);
+                cmdPren.Parameters.AddWithValue("camera_id", pren.Camera_ID);
+                var lastPren =cmdPren.ExecuteScalar();
+
+                if(lastPren != null)
+                {
+                    return RedirectToAction("Details", new {id=lastPren});
+                }
+                else
+                {
+                    return View();
+                }
+
+            }
+            catch (Exception ex)
+            { 
+
+            }
+            finally
+            {
+                DB.conn.Close();
+            }
             return View();
         }
 

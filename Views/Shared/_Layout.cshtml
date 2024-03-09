@@ -25,6 +25,7 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Aggiungi prenotazione", "AddPren", "Prenotazioni", new { area = "" }, new { @class = "nav-link" })</li>
                         <li>@Html.ActionLink("Ricerca Fetch per CodFisc", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                         <li>@Html.ActionLink("Conto Totale Pensione Completa", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                     }
