@@ -385,7 +385,89 @@ namespace Albergo.Controllers
             return View();
         }
 
+        public JsonResult GetCliente(string codFisc)
+        {
+            List<Ospite> prenotazioni = new List<Ospite>();
 
+            try
+            {
+                DB.conn.Open();
+
+                var cmd = new SqlCommand("SELECT * FROM Ospiti WHERE Cod_Fisc = @cod", DB.conn);
+                cmd.Parameters.AddWithValue("@cod", codFisc);
+                var reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        var prenotazione = new Ospite()
+                        {
+                            Ospite_ID = (int)reader["Ospite_ID"],
+                            Nome = (string)reader["Nome"],
+                            Cognome = (string)reader["Cognome"],
+                            Citta = (string)reader["Citta"],
+                            Provincia = (string)reader["Provincia"],
+                            Email = (string)reader["Email"],
+                            Telefono = (string)reader["Telefono"],
+                            Cod_Fisc = (string)reader["Cod_Fisc"],
+                        };
+
+                        prenotazioni.Add(prenotazione);
+                    }
+
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
+            finally
+            {
+                DB.conn.Close();
+            }
+
+            return Json(prenotazioni, JsonRequestBehavior.AllowGet);
+        }
+        //////////////////////////////////////
+        public JsonResult GetPensioneCompleta()
+        {
+            try
+            {
+                DB.conn.Open();
+
+                var cmd = new SqlCommand("SELECT COUNT(*) FROM Prenotazioni WHERE Pensione_ID = @id", DB.conn);
+                cmd.Parameters.AddWithValue("@id", 1);
+                var reader = cmd.ExecuteReader();
+
+                int count = 0;
+                if (reader.Read())
+                {
+                    count = (int)reader[0];
+                }
+
+                // Creare un oggetto anonimo per contenere il conteggio
+                var result = new
+                {
+                    NumeroPrenotazioni = count
+                };
+
+                // Aggiungi un log per vedere il valore del conteggio
+                Console.WriteLine("Numero di prenotazioni trovate: " + count);
+
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                // Se si verifica un'eccezione, restituisci un messaggio di errore
+                return Json(new { error = "Si è verificato un errore: " + ex.Message });
+            }
+            finally
+            {
+                DB.conn.Close();
+            }
+        }
 
     }
 }
