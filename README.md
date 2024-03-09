@@ -12,3 +12,7 @@ Nella cartella DB  c'e' il DB esportato da poter usare per l'applicazione per im
 
 
 Il gestionale presenta alcuni bug tipo il redirect dopo l'aggiunta servizio o l'aggiunta prenotazioni che porta alla home vuota 
+
+
+
+DANNATE VIEWBAG
